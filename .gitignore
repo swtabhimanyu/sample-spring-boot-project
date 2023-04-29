@@ -25,9 +25,9 @@ hs_err_pid*
 replay_pid*
 
 target/
-.classpath
+*.classpath
 HELP.md
-mvnw
-mvnw.cmd
-/.settings
+*mvnw
+*mvnw.cmd
+.settings/
 .mvn/wrapper
