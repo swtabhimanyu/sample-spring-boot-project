@@ -13,4 +13,10 @@ public class DemoController {
 		System.out.println("Hello Printed");
 		return "Hello World";
 	}
+	
+	@RequestMapping("/newPage")
+	public String getHelloWorld2() {
+		System.out.println("Hello Printed");
+		return "Hello World";
+	}
 }
