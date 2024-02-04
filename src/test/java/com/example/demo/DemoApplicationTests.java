@@ -13,7 +13,7 @@ class DemoApplicationTests {
 
 	@Test
 	void contextLoads() {
-		assertEquals("SW", "SW");	
+		assertEquals("SE", "SW");	
 	}
 
 }
