@@ -16,7 +16,7 @@ public class DemoController {
 	
 	@RequestMapping("/newPage")
 	public String getHelloWorld2() {
-		System.out.println("Hello Printed");
-		return "Hello World";
+		System.out.println("Hello World From New Page");
+		return "Hello World From New Page";
 	}
 }
