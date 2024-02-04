@@ -33,7 +33,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Package
-        path: /target
+        path: /home/runner/work/sample-spring-boot-project/sample-spring-boot-project/target/demo-0.0.1-SNAPSHOT.jar
         retention-days: 1
 
 
