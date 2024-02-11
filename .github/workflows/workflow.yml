@@ -51,6 +51,11 @@ jobs:
        docker build -t ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project .
        docker push ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project
 
+    - uses: azure/setup kubectl@v2.0
+    - name: 'use-kubelogin'
+      uses: azure/se-kubelogin@v1
+      with:
+        kubelogin-version: 'v0.0.24'
       # Set the target Azure Kubernetes Service (AKS) cluster.
     - uses: azure/login@v1
       with:
