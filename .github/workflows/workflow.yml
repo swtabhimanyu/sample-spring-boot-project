@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Maven clean install and publish image to ACR
+name: Building a docker image from java and pushing to ACR and deploying to AKS
 
 on:
   push:
