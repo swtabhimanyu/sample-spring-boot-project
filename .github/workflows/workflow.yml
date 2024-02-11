@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Java CI with Maven
+name: Maven clean install and publish image to ACR
 
 on:
   push:
@@ -35,5 +35,16 @@ jobs:
         name: Package
         path: /home/runner/work/sample-spring-boot-project/sample-spring-boot-project/target/demo-0.0.1-SNAPSHOT.jar
         retention-days: 1
+
+    - name: 'Az CLI Login'
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.CLIENT_ID }}
+        tenant-id: ${{ secrets.TENANT_ID }}
+        subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
+    - name: 'Run basic AZ CLI command'
+      run: az group list
+
 
 
