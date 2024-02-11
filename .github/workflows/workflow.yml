@@ -70,7 +70,7 @@ jobs:
         container-registry-password: ${{ secrets.LOGIN_SERVER_PASSWORD}}
         secret-name: k8s-secret
 
-      # Deploy app to AKS 
+      # Deploy app to AKS
     - uses: azure/k8s-deploy@v1
       with:
         manifests: |
