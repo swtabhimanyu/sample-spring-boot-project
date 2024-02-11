@@ -68,7 +68,7 @@ jobs:
       with:
         resource-group: 'MY-RESOURCE-GROUP'
         cluster-name: 'MyK8sCluster'
-        admin: 'false'
+        admin: 'true'
         use-kubelogin: 'true'
 
       # Deploy app to AKS
