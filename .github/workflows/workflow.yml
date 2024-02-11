@@ -76,6 +76,6 @@ jobs:
         manifests: |
           deployment/deployment.yaml
         images: |
-          ${{ secrets.REGISTRY_LOGIN_SERVER}}/sample-project:${{ github.sha }}
+          ${{ secrets.REGISTRY_LOGIN_SERVER}}/sample-project
         imagepullsecrets: |
           k8s-secret
