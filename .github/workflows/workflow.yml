@@ -62,14 +62,8 @@ jobs:
       with:
         resource-group: 'MY-RESOURCE-GROUP'
         cluster-name: 'MyK8sCluster'
-
-      # Create imagepullsecret for Azure Container registry (ACR)
-    - uses: azure/k8s-create-secret@v1
-      with:
-        container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER}}
-        container-registry-username: ${{ secrets.LOGIN_SERVER_USERNAME}}
-        container-registry-password: ${{ secrets.LOGIN_SERVER_PASSWORD}}
-        secret-name: k8s-secret
+        admin: 'false'
+        use-kubelogin: 'true'
 
       # Deploy app to AKS
     - uses: azure/k8s-deploy@v1
@@ -78,5 +72,3 @@ jobs:
           deployment/deployment.yaml
         images: |
           ${{ secrets.REGISTRY_LOGIN_SERVER}}/sample-project
-        imagepullsecrets: |
-          k8s-secret
