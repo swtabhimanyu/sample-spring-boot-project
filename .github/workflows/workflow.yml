@@ -52,12 +52,16 @@ jobs:
        docker push ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project
 
       # Set the target Azure Kubernetes Service (AKS) cluster.
-    - uses: azure/aks-set-context@v1
+    - uses: azure/login@v1
       with:
-        creds: '${{ secrets.AZURE_CREDENTIALS }}'
-        cluster-name: "MyK8sCluster"
-        resource-group: "MY-RESOURCE-GROUP"
+        client-id: ${{ secrets.CLIENT_ID }}
+        tenant-id: ${{ secrets.TENANT_ID }}
+        subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
+    - uses: azure/aks-set-context@v3
+      with:
+        resource-group: 'MY-RESOURCE-GROUP'
+        cluster-name: 'MyK8sCluster'
       # Create imagepullsecret for Azure Container registry (ACR)
     - uses: azure/k8s-create-secret@v1
       with:
