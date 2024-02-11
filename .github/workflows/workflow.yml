@@ -62,6 +62,7 @@ jobs:
       with:
         resource-group: 'MY-RESOURCE-GROUP'
         cluster-name: 'MyK8sCluster'
+
       # Create imagepullsecret for Azure Container registry (ACR)
     - uses: azure/k8s-create-secret@v1
       with:
