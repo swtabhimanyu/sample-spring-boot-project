@@ -50,3 +50,28 @@ jobs:
       run: |
        docker build -t ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project .
        docker push ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project
+
+      # Set the target Azure Kubernetes Service (AKS) cluster.
+    - uses: azure/aks-set-context@v1
+      with:
+        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        cluster-name: "MyK8sCluster"
+        resource-group: "MY-RESOURCE-GROUP"
+
+      # Create imagepullsecret for Azure Container registry (ACR)
+    - uses: azure/k8s-create-secret@v1
+      with:
+        container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER}}
+        container-registry-username: ${{ secrets.LOGIN_SERVER_USERNAME}}
+        container-registry-password: ${{ secrets.LOGIN_SERVER_PASSWORD}}
+        secret-name: k8s-secret
+
+      # Deploy app to AKS
+    - uses: azure/k8s-deploy@v1
+      with:
+        manifests: |
+          deployment/deployment.yaml
+        images: |
+          ${{ secrets.REGISTRY_LOGIN_SERVER}}/sample-project:${{ github.sha }}
+        imagepullsecrets: |
+          k8s-secret
