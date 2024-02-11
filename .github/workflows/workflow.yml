@@ -50,7 +50,7 @@ jobs:
       run: |
        docker build -t ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project .
        docker push ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project
-
+    - uses: azure/checkout@v3
     - uses: azure/setup kubectl@v2.0
     - name: 'use-kubelogin'
       uses: azure/use-kubelogin@v1
