@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: demo-app
-          image: myregistry.azurecr.io/sample-project
+          image: abhimanyucr.azurecr.io/sample-project
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
