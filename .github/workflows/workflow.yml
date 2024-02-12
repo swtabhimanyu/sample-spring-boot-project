@@ -51,12 +51,6 @@ jobs:
        docker build -t ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project .
        docker push ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project
 
-    - uses: actions/checkout@v3
-    - uses: azure/setup-kubectl@v2.0
-    - name: 'use-kubelogin'
-      uses: azure/use-kubelogin@v1
-      with:
-        kubelogin-version: 'v0.0.24'
       # Set the target Azure Kubernetes Service (AKS) cluster.
     - uses: azure/login@v1
       with:
@@ -68,8 +62,13 @@ jobs:
       with:
         resource-group: 'MY-RESOURCE-GROUP'
         cluster-name: 'MyK8sCluster'
-        admin: 'true'
-        use-kubelogin: 'true'
+      # Create imagepullsecret for Azure Container registry (ACR)
+    - uses: azure/k8s-create-secret@v1
+      with:
+        container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER}}
+        container-registry-username: ${{ secrets.LOGIN_SERVER_USERNAME}}
+        container-registry-password: ${{ secrets.LOGIN_SERVER_PASSWORD}}
+        secret-name: k8s-secret
 
       # Deploy app to AKS
     - uses: azure/k8s-deploy@v1
@@ -77,4 +76,6 @@ jobs:
         manifests: |
           deployment/deployment.yaml
         images: |
-          ${{ secrets.REGISTRY_LOGIN_SERVER}}/sample-project
+          ${{ secrets.REGISTRY_LOGIN_SERVER}}/sample-project:${{ github.sha }}
+        imagepullsecrets: |
+          k8s-secret
