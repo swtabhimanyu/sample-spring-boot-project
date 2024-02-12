@@ -68,7 +68,6 @@ jobs:
         container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER}}
         container-registry-username: ${{ secrets.LOGIN_SERVER_USERNAME}}
         container-registry-password: ${{ secrets.LOGIN_SERVER_PASSWORD}}
-        secret-name: k8s-secret
 
       # Deploy app to AKS
     - uses: azure/k8s-deploy@v1
@@ -77,5 +76,3 @@ jobs:
           deployment/deployment.yaml
         images: |
           ${{ secrets.REGISTRY_LOGIN_SERVER}}/sample-project:${{ github.sha }}
-        imagepullsecrets: |
-          k8s-secret

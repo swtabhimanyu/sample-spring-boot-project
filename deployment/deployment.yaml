@@ -14,12 +14,10 @@ spec:
     spec:
       containers:
         - name: demo-app
-          image: abhimanyurcr.azurecr.io/sample-project
+          image: abhimanyurcr.azurecr.io/sample-project/sample-project
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
-      imagePullSecrets:
-        - name: k8s-secret
 ---
 apiVersion: v1
 kind: Service
