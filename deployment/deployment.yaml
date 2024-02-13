@@ -36,7 +36,6 @@ kind: Ingress
 metadata:
   name: ingress-demo-app
 spec:
-  ingressClassName: webapprouting.kubernetes.azure.com
   rules:
     - http:
         paths:
