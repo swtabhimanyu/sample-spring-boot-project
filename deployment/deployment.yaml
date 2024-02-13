@@ -18,8 +18,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
-      imagePullSecrets:
-        - name: k8s-secret
 ---
 apiVersion: v1
 kind: Service
