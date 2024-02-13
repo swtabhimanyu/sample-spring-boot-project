@@ -30,3 +30,20 @@ spec:
   ports:
     - port: 8081
       targetPort: 8081
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-demo-app
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: demo-app-service
+                port:
+                  number: 8081
