@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DemoController {
-
-
 //	Logger logger=Logger.getLogger(DemoController.class);
 
 	@RequestMapping("/")

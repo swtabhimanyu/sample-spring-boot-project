@@ -24,7 +24,7 @@ kind: Service
 metadata:
   name: demo-app-service
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     name: demo-app
   ports:
