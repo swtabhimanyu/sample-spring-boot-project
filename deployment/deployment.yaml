@@ -37,7 +37,8 @@ metadata:
   name: ingress-demo-app
 spec:
   rules:
-    - http:
+    - host: "*20.251.12.81"
+      http:
         paths:
           - path: /
             pathType: Prefix
