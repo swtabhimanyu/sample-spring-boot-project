@@ -22,45 +22,19 @@ jobs:
           scan-type: fs
           scan-ref: .
           trivy-config: trivy.yaml
-          output: trivy-report.txt
+          output: trivy-output.txt
 
-      - name: List directory contents
-        run: ls -R ${{ github.workspace }}
-        # Lists all files and directories to ensure they are in the expected location
-
-      - name: Verify Dockerfile presence
-        run: |
-          if [ -f ${{ github.workspace }}/Dockerfile ]; then 
-            echo "Dockerfile found"; 
-          else 
-            echo "Dockerfile not found"; 
-            exit 1; 
-          fi
-        # Ensure Dockerfile is present, exit with error if not found
-
-      - name: Read Trivy output
-        id: read_output
-        run: |
-          if [ -f trivy-report.txt ]; then
-            TRIVY_OUTPUT=$(cat trivy-report.txt)
-            echo "TRIVY_OUTPUT<<EOF" >> $GITHUB_ENV
-            echo "$TRIVY_OUTPUT" >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
-          else
-            echo "Trivy report file not found." >> $GITHUB_ENV
-          fi
-      - name: Add comment to PR
-        uses: actions/github-script@v6
+      - name: Upload Trivy scan report
+        uses: actions/upload-artifact@v3
         with:
-          script: |
-            const output = process.env.TRIVY_OUTPUT;
-            if (output && output.trim() !== "Trivy report file not found.") {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: `Trivy Scan Results:\n\n\`\`\`\n${output}\n\`\`\``
-              });
-            } else {
-              console.log('No Trivy output available to comment on.');
-            }
+          name: trivy-scan-report
+          path: trivy-output.txt
+
+      - name: Download Trivy scan report
+        uses: actions/download-artifact@v3
+        with:
+          name: trivy-scan-report
+          path: ./artifact-download
+
+      - name: Echo Trivy scan report contents
+        run: cat ./artifact-download/trivy-output.txt
