@@ -1,0 +1,35 @@
+on:
+  # Trigger the workflow on push or pull request
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  trivy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run Trivy vulnerability scanner in fs mode
+      uses: aquasecurity/trivy-action@0.20.0
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        trivy-config: trivy.yaml
+        output: 'result.json'
+        
+    - name: Add Comment on PR
+      uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const fileContents = fs.readFileSync('result.json').toString();
+            if(fileContents!=null && fileContents!='' && fileContents!='undefined'){
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: fileContents
+            });
+            }else{
+            echo "No vul";
+            }
