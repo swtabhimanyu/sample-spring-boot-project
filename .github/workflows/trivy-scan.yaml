@@ -25,3 +25,6 @@ jobs:
           format: template
           template: "@trivy/github-markdown.tpl"
           output: ${{ github.step_summary }}
+      - name: Echo
+        run: |
+            echo ${{ github.step_summary }}
