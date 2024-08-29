@@ -23,18 +23,12 @@ jobs:
           scan-ref: .
           trivy-config: trivy.yaml
           output: trivy-output.txt
-
-      - name: Upload Trivy scan report
-        uses: actions/upload-artifact@v3
-        with:
-          name: trivy-scan-report
-          path: trivy-output.txt
-
-      - name: Download Trivy scan report
-        uses: actions/download-artifact@v3
-        with:
-          name: trivy-scan-report
-          path: ./artifact-download
-
-      - name: Echo Trivy scan report contents
-        run: cat ./artifact-download/trivy-output.txt
+   
+      - name: Check if Trivy output file exists
+        run: |
+          if [ ! -f trivy-output.txt ]; then
+            echo "Error: trivy-output.txt not found!"
+            exit 1
+          else
+            echo "trivy-output.txt found, proceeding with upload."
+          fi
