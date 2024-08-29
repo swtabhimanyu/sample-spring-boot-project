@@ -22,13 +22,6 @@ jobs:
           scan-type: fs
           scan-ref: .
           trivy-config: trivy.yaml
-          output: trivy-output.txt
-   
-      - name: Check if Trivy output file exists
-        run: |
-          if [ ! -f trivy-output.txt ]; then
-            echo "Error: trivy-output.txt not found!"
-            exit 1
-          else
-            echo "trivy-output.txt found, proceeding with upload."
-          fi
+          format: template
+          template: "@trivy/github-markdown.tpl"
+          output: ${{ github.step_summary }}
