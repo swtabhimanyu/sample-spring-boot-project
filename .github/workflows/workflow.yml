@@ -45,6 +45,13 @@ jobs:
         login-server: ${{ secrets.REGISTRY_LOGIN_SERVER}} # default: index.docker.io
         username: ${{ secrets.LOGIN_SERVER_USERNAME}}
         password: ${{ secrets.LOGIN_SERVER_PASSWORD}}
+        
+    - name: Run Trivy vulnerability scanner in fs mode
+      uses: aquasecurity/trivy-action@0.20.0
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        trivy-config: trivy.yaml        
 
     - name: 'Build and push image'
       run: |
