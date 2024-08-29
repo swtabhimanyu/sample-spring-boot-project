@@ -23,6 +23,21 @@ jobs:
           scan-ref: .
           trivy-config: trivy.yaml
           output: trivy-report.txt
+
+      - name: List directory contents
+        run: ls -R ${{ github.workspace }}
+        # Lists all files and directories to ensure they are in the expected location
+
+      - name: Verify Dockerfile presence
+        run: |
+          if [ -f ${{ github.workspace }}/Dockerfile ]; then 
+            echo "Dockerfile found"; 
+          else 
+            echo "Dockerfile not found"; 
+            exit 1; 
+          fi
+        # Ensure Dockerfile is present, exit with error if not found
+
       - name: Read Trivy output
         id: read_output
         run: |
