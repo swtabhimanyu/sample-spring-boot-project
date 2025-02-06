@@ -33,7 +33,7 @@ jobs:
     - name: Build with Maven
       run: mvn clean package
     - name: Saving jar
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Package
         path: /home/runner/work/sample-spring-boot-project/sample-spring-boot-project/target/demo-0.0.1-SNAPSHOT.jar
