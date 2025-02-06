@@ -39,34 +39,23 @@ jobs:
         path: /home/runner/work/sample-spring-boot-project/sample-spring-boot-project/target/demo-0.0.1-SNAPSHOT.jar
         retention-days: 1
 
-    - name: 'Login to docker'
-      uses: azure/docker-login@v1
+    - name: Run Trivy on project filesystem
+      id: trivy_scan
+      continue-on-error: true
+      uses: aquasecurity/trivy-action@0.28.0
       with:
-        login-server: ${{ secrets.REGISTRY_LOGIN_SERVER}} # default: index.docker.io
-        username: ${{ secrets.LOGIN_SERVER_USERNAME}}
-        password: ${{ secrets.LOGIN_SERVER_PASSWORD}}
+        target: '.'                   # Scans the entire repository
+        format: 'table'
+        exit-code: '0'                # Do not fail the job on vulnerabilities
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'
 
-    - name: 'Build and push image'
+    - name: Check Trivy results and set warnings
       run: |
-       docker build -t ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project-${{ github.sha}} .
-       docker push ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project-${{ github.sha}}
-
-      # Set the target Azure Kubernetes Service (AKS) cluster.
-    - uses: azure/login@v1
-      with:
-        client-id: ${{ secrets.CLIENT_ID }}
-        tenant-id: ${{ secrets.TENANT_ID }}
-        subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
-
-    - uses: azure/aks-set-context@v3
-      with:
-        resource-group: 'MY-RESOURCE-GROUP'
-        cluster-name: 'MyK8sCluster'
-
-      # Deploy app to AKS
-    - uses: azure/k8s-deploy@v1
-      with:
-        manifests: |
-          deployment/deployment.yaml
-        images: |
-          ${{ secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project-${{ github.sha}}
+        if grep -q "CRITICAL\|HIGH" trivy-results.log; then
+        echo "::warning::Trivy scan found vulnerabilities. Review the logs for details."
+          cat trivy-results.log
+        else
+          echo "No critical or high vulnerabilities found."
+        fi
