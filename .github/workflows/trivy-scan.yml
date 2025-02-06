@@ -9,9 +9,6 @@ jobs:
   trivy-scan:
     name: Trivy Filesystem Scan
     runs-on: ubuntu-20.04
-    permissions:
-      pull-requests: write
-      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,11 +27,7 @@ jobs:
 
       - name: Capture Trivy Scan Output
         id: capture_trivy_output
-        shell: bash
-        run: |
-          echo "trivy_output<<EOF" >> $GITHUB_ENV
-          cat ${{ steps.trivy_scan.outputs.results }} >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+        run: echo "TRIVY_SCAN_RESULTS<<EOF" >> $GITHUB_ENV && cat ${{ steps.trivy_scan.outputs.results }} >> $GITHUB_ENV && echo "EOF" >> $GITHUB_ENV
 
       - name: Post Trivy Scan Results to PR
         if: ${{ github.event_name == 'pull_request' }}
@@ -44,7 +37,7 @@ jobs:
             **Trivy Scan Results:**
 
             ```plaintext
-            ${{ env.trivy_output }}
+            ${{ env.TRIVY_SCAN_RESULTS }}
             ```
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
