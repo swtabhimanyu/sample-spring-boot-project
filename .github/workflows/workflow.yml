@@ -42,11 +42,12 @@ jobs:
     - name: Run Trivy on project filesystem
       id: trivy_scan
       continue-on-error: true
-      uses: aquasecurity/trivy-action@master
+      uses: aquasecurity/trivy-action@0.28.0
       with:
-        target: '.'                   # Scans the entire repository
+        scan-type: fs       # Specify filesystem scan mode
+        input: '.'          # Directory to scan (your repository root)
         format: 'table'
-        exit-code: '0'                # Do not fail the job on vulnerabilities
+        exit-code: '0'       # Do not fail the job on vulnerabilities
         ignore-unfixed: true
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'
