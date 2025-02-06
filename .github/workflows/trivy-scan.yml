@@ -24,10 +24,13 @@ jobs:
           scan-type: fs
           input: '.'
           format: 'table'
-          exit-code: '0'
+          output: 'trivy_scan_results.txt'  # Output results to a file
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+
+      - name: Display Trivy Scan Results
+        run: cat trivy_scan_results.txt
 
       - name: Post Trivy Scan Results to PR
         if: ${{ github.event_name == 'pull_request' }}
@@ -36,6 +39,8 @@ jobs:
           message: |
             **Trivy Scan Results:**
 
+            ```plaintext
             ${{ steps.trivy_scan.outputs.results }}
+            ```
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
