@@ -7,11 +7,11 @@ on:
 
 jobs:
   trivy-scan:
+    name: Trivy Filesystem Scan
+    runs-on: ubuntu-20.04
     permissions:
       pull-requests: write
       contents: read
-    name: Trivy Filesystem Scan
-    runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -24,13 +24,17 @@ jobs:
           scan-type: fs
           input: '.'
           format: 'table'
-          output: 'trivy_scan_results.txt'  # Output results to a file
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
-      - name: Display Trivy Scan Results
-        run: cat trivy_scan_results.txt
+      - name: Capture Trivy Scan Output
+        id: capture_trivy_output
+        shell: bash
+        run: |
+          echo "trivy_output<<EOF" >> $GITHUB_ENV
+          cat ${{ steps.trivy_scan.outputs.results }} >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Post Trivy Scan Results to PR
         if: ${{ github.event_name == 'pull_request' }}
@@ -40,7 +44,7 @@ jobs:
             **Trivy Scan Results:**
 
             ```plaintext
-            ${{ steps.trivy_scan.outputs.results }}
+            ${{ env.trivy_output }}
             ```
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
