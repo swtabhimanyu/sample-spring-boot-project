@@ -1,0 +1,38 @@
+name: Security Scan and PR Comment
+on:
+  pull_request:
+    branches:
+      - master
+      - development
+
+jobs:
+  trivy-scan:
+    name: Trivy Filesystem Scan
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Trivy on project filesystem
+        id: trivy_scan
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          input: '.'
+          format: 'table'
+          exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Post Trivy Scan Results to PR
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            **Trivy Scan Results:**
+
+            ${{ steps.trivy_scan.outputs.results }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
