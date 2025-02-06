@@ -42,7 +42,7 @@ jobs:
     - name: Run Trivy on project filesystem
       id: trivy_scan
       continue-on-error: true
-      uses: aquasecurity/trivy-action@0.28.0
+      uses: aquasecurity/trivy-action@master
       with:
         target: '.'                   # Scans the entire repository
         format: 'table'
