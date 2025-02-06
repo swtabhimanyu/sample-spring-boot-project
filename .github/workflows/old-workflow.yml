@@ -1,0 +1,72 @@
+# # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# # This workflow uses actions that are not certified by GitHub.
+# # They are provided by a third-party and are governed by
+# # separate terms of service, privacy policy, and support
+# # documentation.
+
+# name: Building a docker image from java and pushing to ACR and deploying to AKS
+
+# on:
+#   push:
+#     branches: [ "master" ]
+#   pull_request:
+#     branches: [ "master" ]
+
+# permissions:
+#   id-token: write
+#   contents: read
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - uses: actions/checkout@v3
+#     - name: Set up JDK 17
+#       uses: actions/setup-java@v3
+#       with:
+#         java-version: '17'
+#         distribution: 'temurin'
+#         cache: maven
+#     - name: Build with Maven
+#       run: mvn clean package
+#     - name: Saving jar
+#       uses: actions/upload-artifact@v3
+#       with:
+#         name: Package
+#         path: /home/runner/work/sample-spring-boot-project/sample-spring-boot-project/target/demo-0.0.1-SNAPSHOT.jar
+#         retention-days: 1
+
+#     - name: 'Login to docker'
+#       uses: azure/docker-login@v1
+#       with:
+#         login-server: ${{ secrets.REGISTRY_LOGIN_SERVER}} # default: index.docker.io
+#         username: ${{ secrets.LOGIN_SERVER_USERNAME}}
+#         password: ${{ secrets.LOGIN_SERVER_PASSWORD}}
+
+#     - name: 'Build and push image'
+#       run: |
+#        docker build -t ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project-${{ github.sha}} .
+#        docker push ${{secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project-${{ github.sha}}
+
+#       # Set the target Azure Kubernetes Service (AKS) cluster.
+#     - uses: azure/login@v1
+#       with:
+#         client-id: ${{ secrets.CLIENT_ID }}
+#         tenant-id: ${{ secrets.TENANT_ID }}
+#         subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
+#     - uses: azure/aks-set-context@v3
+#       with:
+#         resource-group: 'MY-RESOURCE-GROUP'
+#         cluster-name: 'MyK8sCluster'
+
+#       # Deploy app to AKS
+#     - uses: azure/k8s-deploy@v1
+#       with:
+#         manifests: |
+#           deployment/deployment.yaml
+#         images: |
+#           ${{ secrets.REGISTRY_LOGIN_SERVER}}/sample-project:sample-project-${{ github.sha}}
