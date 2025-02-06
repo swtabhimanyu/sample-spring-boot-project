@@ -7,6 +7,10 @@ on:
 
 jobs:
   trivy-scan:
+    permissions:
+    pull-requests: write
+    contents: read
+    runs-on: ubuntu-20.04
     name: Trivy Filesystem Scan
     runs-on: ubuntu-20.04
     steps:
